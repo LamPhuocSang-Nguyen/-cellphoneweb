@@ -19,6 +19,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,15 +39,16 @@ public class UserController {
     }
     // get single user by id
     @GetMapping("/users/{id}")
-    public ResponseEntity<ApiReponse> getUserById(@PathVariable int id, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()){
+    public ResponseEntity<ApiReponse> getUserById(@PathVariable int id) {
+        User user = userService.getUser(id);
+        if (user == null) {
             ApiReponse apiReponse = ApiReponse.builder()
                     .status(HttpStatus.NOT_FOUND.value())
                     .message("User Id not found")
                     .build();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiReponse);
         }
-        User user = userService.getUser(id);
+
         ApiReponse apiReponse = ApiReponse.builder()
                 .data(user)
                 .status(HttpStatus.OK.value())
@@ -54,12 +56,12 @@ public class UserController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(apiReponse);
     }
-    @PostMapping("/admin/users")
+    @PostMapping("/admin/users/create")
     public ResponseEntity<ApiReponse> createUser(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()){
-            List<String> errors = bindingResult.getFieldErrors().stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream()
+                    .map(Object::toString)
+                    .collect(Collectors.toList());
             ApiReponse apiReponse = ApiReponse.builder()
                     .data(errors)
                     .status(HttpStatus.BAD_REQUEST.value())
@@ -75,7 +77,7 @@ public class UserController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(apiReponse);
     }
-    @PutMapping("/admin/users/{id}")
+    @PutMapping("/admin/users/update/{id}")
     public ResponseEntity<ApiReponse> updateUser(@PathVariable int id, @Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
         User user = userService.getUser(id);
         if(user == null){
@@ -85,10 +87,10 @@ public class UserController {
                     .build();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiReponse);
         }
-        if(bindingResult.hasErrors()){
-            List<String> errors = bindingResult.getFieldErrors().stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream()
+                    .map(Object::toString)
+                    .collect(Collectors.toList());
             ApiReponse apiReponse = ApiReponse.builder()
                     .data(errors)
                     .status(HttpStatus.BAD_REQUEST.value())
@@ -104,7 +106,7 @@ public class UserController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(apiReponse);
     }
-    @DeleteMapping("/admin/users/{id}")
+    @DeleteMapping("/admin/users/delete/{id}")
     public ResponseEntity<ApiReponse> deleteUser(@PathVariable int id) {
         User user = userService.getUser(id);
         if(user == null){
