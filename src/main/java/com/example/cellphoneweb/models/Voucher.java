@@ -14,7 +14,7 @@ public class Voucher extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int voucher_Id;
-    private String voucher_code;
+    private String voucherCode;
     private String discount;
     private String voucher_status;
 
