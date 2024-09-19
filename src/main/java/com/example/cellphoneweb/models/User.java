@@ -20,6 +20,7 @@ public class User extends BaseEntity {
     private String email;
     private String address;
     private String phone;
+    private String role;
 
 
 }

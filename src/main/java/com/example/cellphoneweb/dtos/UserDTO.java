@@ -30,4 +30,6 @@ public class UserDTO {
     @Length(min = 10, max = 20, message = "phone must 10 characters ")
     @NotBlank(message = "phone is required")
     private String phone;
+    @JsonProperty("role")
+    private String role;
 }

@@ -16,6 +16,7 @@ public class UserResponse extends BaseResponse {
     private String email;
     private String address;
     private String phone;
+    private String role;
 
     public static UserResponse fromUser(User user) {
         UserResponse userResponse = UserResponse.builder()
@@ -25,6 +26,7 @@ public class UserResponse extends BaseResponse {
                 .email(user.getEmail())
                 .address(user.getAddress())
                 .phone(user.getPhone())
+                .role(user.getRole())
                 .build();
         userResponse.setCreated_at(user.getCreated_at());
         userResponse.setUpdated_at(user.getUpdated_at());

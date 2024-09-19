@@ -25,6 +25,7 @@ public class UserService implements IUserService {
                 .email(userDTO.getEmail())
                 .address(userDTO.getAddress())
                 .phone(userDTO.getPhone())
+                .role(userDTO.getRole() != null ? userDTO.getRole() : "role_user")
                 .build();
         return userRepository.save(user);
     }
@@ -44,6 +45,7 @@ public class UserService implements IUserService {
             user.setEmail(userDTO.getEmail());
             user.setAddress(userDTO.getAddress());
             user.setPhone(userDTO.getPhone());
+            user.setRole(userDTO.getRole() != null ? userDTO.getRole() : "role_user");
             return userRepository.save(user);
         }
         return null;
