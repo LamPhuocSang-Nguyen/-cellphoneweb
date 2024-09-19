@@ -40,6 +40,6 @@ public class ProductEntity extends BaseEntity {
     @OneToMany(mappedBy = "productImg", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ImageProductEntity> imageProductEntities;
 
-    @OneToMany(mappedBy = "productCart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CartEntity> carts;
+//    @OneToMany(mappedBy = "productCart", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private Set<CartEntity> carts;
 }
