@@ -3,8 +3,6 @@ package com.example.cellphoneweb.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
-
 @Entity
 @Table(name = "roles")
 @Setter
@@ -20,6 +18,6 @@ public class RoleEntity extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "role")
-    private Set<UserEntity> users;
+//    @OneToMany(mappedBy = "role")
+//    private Set<UserEntity> users;
 }
