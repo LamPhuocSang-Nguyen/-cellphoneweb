@@ -32,10 +32,6 @@ public class UserEntity extends BaseEntity{
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "role")
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
     @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
     private Boolean isActive = true;
 
@@ -44,6 +40,10 @@ public class UserEntity extends BaseEntity{
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderEntity> orders;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private RoleEntity role;
 
 
 }
