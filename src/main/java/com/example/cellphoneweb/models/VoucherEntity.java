@@ -18,7 +18,7 @@ public class VoucherEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = false, nullable = false)
     private String code; // Mã voucher
 
     @Column(name = "discount_amount", nullable = false)

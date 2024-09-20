@@ -21,6 +21,6 @@ public class CategoryEntity extends BaseEntity{
     @Column(name = "category_name")
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ProductEntity> products;
+//    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private Set<ProductEntity> products;
 }
