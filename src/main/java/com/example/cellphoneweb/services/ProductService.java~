@@ -1,11 +1,11 @@
 package com.example.cellphoneweb.services;
 
+import com.example.cellphoneweb.dtos.ProductDTO;
 import com.example.cellphoneweb.dtos.ProductImageDTO;
-import com.example.cellphoneweb.models.ProductImage;
-import com.example.cellphoneweb.models.Products;
+import com.example.cellphoneweb.models.ImageProductEntity;
+import com.example.cellphoneweb.models.ProductEntity;
 import com.example.cellphoneweb.repositorise.ProductImageRepository;
 import com.example.cellphoneweb.repositorise.ProductRepository;
-import com.example.cellphoneweb.responses.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,40 +17,45 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService implements IProductService {
     private final ProductRepository productRepository;
-    private final ProductImageRepository productImageRepository;
 
     @Override
-    public Products getProductById(int product_id) {
-        return productRepository.findById(product_id).orElseThrow(() -> new IllegalArgumentException("Product with ID " + product_id + " not found"));
+    public ProductEntity getProductById(long id) {
+        return productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product with ID " + id + " not found"));
     }
 
     @Override
-    public Page<ProductResponse> getProduct(Pageable pageable) {
-        Page<Products> products = productRepository.findAll(pageable);
-        return products.map(ProductResponse::fromProduct);
+    public List<ProductEntity> getAllProducts() {
+        return productRepository.findAll();
     }
 
     @Override
-    public ProductImage saveProductImage(int product_id, ProductImageDTO productImageDTO) {
-        Products product = getProductById(product_id);
-        ProductImage productImage = ProductImage.builder()
-                .product(product)
-                .imageUrl(productImageDTO.getImageUrl())
+    public ProductEntity saveProduct(ProductDTO productDTO) {
+        ProductEntity product = ProductEntity.builder()
+                .name(productDTO.getProductName())
+                .description(productDTO.getProductDescription())
+                .price(productDTO.getPrice())
+                .quantityInStock(productDTO.getQuantityInStock())
                 .build();
-        int size = productImageRepository.findByProduct_ProductId(product_id).size();
-        if(size > 4){
-            throw new IllegalArgumentException("Product image is more than 4");
-        }
-        return productImageRepository.save(productImage);
+        return productRepository.save(product);
     }
 
     @Override
-    public List<ProductImage> getAllProductImages(int product_id) {
-        return productImageRepository.findByProduct_ProductId(product_id);
+    public ProductEntity updateProduct(long id, ProductDTO productDTO) {
+        ProductEntity product = getProductById(id);
+        product.setName(productDTO.getProductName());
+        product.setDescription(productDTO.getProductDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setQuantityInStock(productDTO.getQuantityInStock());
+        return productRepository.save(product);
     }
 
     @Override
-    public void deleteProductImage(int imageId) {
-        
+    public void deleteProduct(long id) {
+        productRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<ProductEntity> getProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 }

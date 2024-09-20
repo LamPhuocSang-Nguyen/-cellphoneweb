@@ -19,11 +19,11 @@ public class ProductResponse extends BaseResponse {
 
     public static ProductResponse fromProduct(ProductEntity product) {
         return ProductResponse.builder()
-                .productId(product.getId())
-                .productName(product.getName())
-                .productDescription(product.getDescription())
-                .price(product.getPrice().doubleValue())
-                .quantityInStock(product.getQuantityInStock())
+                .productId(product.getId()) // Sửa lại để lấy ID từ phương thức getId()
+                .productName(product.getName()) // Sửa lại để lấy tên sản phẩm
+                .productDescription(product.getDescription()) // Sửa lại để lấy mô tả sản phẩm
+                .price(product.getPrice().doubleValue()) // Chuyển giá thành double
+                .quantityInStock(product.getQuantityInStock()) // Lấy số lượng trong kho
                 .build();
     }
 }

@@ -1,14 +1,16 @@
 package com.example.cellphoneweb.responses;
 
+
 import lombok.*;
+
 import java.util.List;
 
 @Builder
 @Data
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductListResponse {
-    private List<ProductResponse> productResponseList;
-    private int totalPage;
+    private List<ProductResponse> productResponsesList;
+    private int totalPages;
 }

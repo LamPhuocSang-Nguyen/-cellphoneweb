@@ -1,111 +1,123 @@
 package com.example.cellphoneweb.controllers;
 
-import com.example.cellphoneweb.dtos.ProductImageDTO;
-import com.example.cellphoneweb.models.ProductImage;
-import com.example.cellphoneweb.responses.ApiReponse;
-import com.example.cellphoneweb.services.ProductService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
+import com.example.cellphoneweb.dtos.ProductDTO;
+import com.example.cellphoneweb.exceptions.ResourceNotFoundException;
+import com.example.cellphoneweb.models.ProductEntity;
+import com.example.cellphoneweb.responses.ApiReponse;
+import com.example.cellphoneweb.responses.ProductListResponse;
+import com.example.cellphoneweb.responses.ProductResponse;
+import com.example.cellphoneweb.services.ProductService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import java.util.UUID;
 
 @RestController
-@RequestMapping("${api.prefix}/product")
+@RequestMapping("/${api.prefix}/product")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
-public class ProductController {
+public class productController {
     private final ProductService productService;
 
-    private String storeFile(MultipartFile file) throws IOException {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
-        java.nio.file.Path uploadDir = Paths.get("upload");
-        if(!Files.exists(uploadDir)) {
-            Files.createDirectory(uploadDir);
-        }
-        java.nio.file.Path destination = Paths.get(uploadDir.toString(), uniqueFileName);
-        Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-        return uniqueFileName;
+    @GetMapping("/list")
+    public ResponseEntity<ApiReponse> getProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<ProductEntity> productResponses= productService.getProducts(pageable);
+        int totalPage = productResponses.getTotalPages();
+        List<ProductResponse> responseList= productResponses.getContent().stream()
+                .map(product -> ProductResponse.fromProduct(product))
+                .toList();
+
+        ProductListResponse productListResponse = ProductListResponse.builder()
+                .productResponsesList(responseList)
+                .totalPages(totalPage)
+                .build();
+
+        ApiReponse apiReponse = ApiReponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Show students sucessfully")
+                .data(productListResponse) // List of students
+                .build();
+        return ResponseEntity.ok(apiReponse);
     }
 
-    @GetMapping("/getAllImageStudent/{id}")
-    public ResponseEntity<ApiReponse> getAllImage(@PathVariable int id) {
-        ApiReponse apiResponse = ApiReponse.builder()
-                .data(productService.getAllProductImages(id))
-                .message("Search success")
+    @GetMapping("/getAll")
+    public ResponseEntity<ApiReponse> getAll(){
+        ApiReponse apiReponse = ApiReponse.builder()
+                .data(productService.getAllProducts())
+                .status(HttpStatus.OK.value())
+                .message("OK")
+                .build();
+        return ResponseEntity.ok().body(apiReponse);
+    }
+
+    @PostMapping("/admin/add")
+    public ResponseEntity<ApiReponse> addingProduct(@Valid @RequestBody ProductDTO productDTO, BindingResult result){
+        if(result.hasErrors()){
+            List<String> errors = result.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage).toList();
+            ApiReponse apiReponse = ApiReponse.builder()
+                    .data(errors)
+                    .message("Validation failed")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build();
+            return ResponseEntity.badRequest().body(apiReponse);
+        }
+        ProductEntity product = productService.saveProduct(productDTO);
+
+        ApiReponse apiReponse = ApiReponse.builder()
+                .data(product)
+                .message("Insert sucessfully")
                 .status(HttpStatus.OK.value())
                 .build();
-        return ResponseEntity.ok().body(apiResponse);
+        return ResponseEntity.ok(apiReponse);
     }
 
-    @PostMapping(value = "/uploads/{id}")
-    public ResponseEntity<ApiReponse> upLoads(@PathVariable int id, @ModelAttribute("files") List<MultipartFile> files) throws IOException {
-        List<ProductImage> productImages = new ArrayList<>();
-        int count = 0;
-        for (MultipartFile file : files) {
-            if (file != null) {
-                if (file.getSize() == 0) {
-                    count++;
-                    continue;
-                }
-                String fileName = storeFile(file);
-                ProductImageDTO productImageDTO = ProductImageDTO.builder()
-                        .imageUrl(fileName)
-                        .build();
-                ProductImage productImage = productService.saveProductImage(id, productImageDTO);
-                productImages.add(productImage);
-            }
+    @PutMapping("/admin/edit/{id}")
+    public ResponseEntity<ApiReponse> editProduct(@PathVariable long id, @Valid @RequestBody ProductDTO productDTO, BindingResult result){
+        if(result.hasErrors()){
+            List<String> errors = result.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage).toList();
+            ApiReponse apiReponse = ApiReponse.builder()
+                    .data(errors)
+                    .message("Validation failed")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build();
+            return ResponseEntity.badRequest().body(apiReponse);
         }
-        if (count == 1) {
-            throw new IllegalArgumentException("Chưa chọn file");
+        ProductEntity product = productService.updateProduct(id,productDTO);
+        if(product == null){
+            throw new ResourceNotFoundException("Product không tìm thấy với id "+ id);
         }
         ApiReponse apiResponse = ApiReponse.builder()
-                .data(productImages)
-                .message("Upload success")
-                .status(HttpStatus.OK.value())
-                .build();
-        return ResponseEntity.ok(apiResponse);
-    }
-
-    @GetMapping("/images/{imageName}")
-    public ResponseEntity<?> viewImage(@PathVariable String imageName) {
-        try{
-            java.nio.file.Path imagePath = Paths.get("upload/" + imageName);
-            UrlResource resource = new UrlResource(imagePath.toUri());
-
-            if(resource.exists()) {
-                return ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_JPEG)
-                        .body(resource);
-            } else {
-                return ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_JPEG)
-                        .body(new UrlResource(Paths.get("uploads/notFound.jpeg").toUri()));
-            }
-        } catch (Exception e){
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @DeleteMapping("/delete/{imageId}")
-    public ResponseEntity<ApiReponse> deleteImage(@PathVariable int imageId) {
-        productService.deleteProductImage(imageId);
-        ApiReponse apiResponse = ApiReponse.builder()
-                .message("Image deleted successfully")
+                .data(product)
+                .message("Updated sucessfully")
                 .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponse);
+    }
+
+    @DeleteMapping("/admin/delete/{id}")
+    public ResponseEntity<ApiReponse> delete(@PathVariable long id){
+        ProductEntity product = productService.getProductById(id);
+        if(product == null){
+            throw new ResourceNotFoundException("Product không tìm thấy với id "+ id);
+        }
+        productService.deleteProduct(id);
+        ApiReponse apiReponse = ApiReponse.builder()
+                .data(id)
+                .message("Delete sucessfully")
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiReponse);
     }
 }
