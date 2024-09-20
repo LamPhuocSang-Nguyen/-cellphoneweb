@@ -1,7 +1,7 @@
 package com.example.cellphoneweb.services;
 
 import com.example.cellphoneweb.dtos.VoucherDTO;
-import com.example.cellphoneweb.models.Voucher;
+import com.example.cellphoneweb.models.VoucherEntity;
 import com.example.cellphoneweb.repositorise.VoucherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,30 +14,34 @@ public class VoucherService implements IVoucherService {
     public final VoucherRepository voucherRepository;
 
     @Override
-    public Voucher createVoucher(VoucherDTO voucherDTO) {
-        Voucher vch = Voucher.builder()
-                .voucherCode(voucherDTO.getVoucherCode())
-                .discount(voucherDTO.getDiscount())
-                .voucher_status(voucherDTO.getVoucher_status())
+    public VoucherEntity createVoucher(VoucherDTO voucherDTO) {
+        VoucherEntity vch = VoucherEntity.builder()
+                .code(voucherDTO.getCode())
+                .discountAmount(voucherDTO.getDiscountAmount())
+                .expirationDate(voucherDTO.getExpirationDate())
+                .isActive(voucherDTO.getIsActive())
+                .minOrderValue(voucherDTO.getMinOrderValue())
                 .build();
         return voucherRepository.save(vch);
     }
 
     @Override
-    public Voucher updateVoucher(int voucher_Id, VoucherDTO voucherDTO) {
-        Voucher vch = voucherRepository.findById(voucher_Id).orElse(null);
+    public VoucherEntity updateVoucher(long voucher_Id, VoucherDTO voucherDTO) {
+        VoucherEntity vch = voucherRepository.findById(voucher_Id).orElse(null);
         if(vch != null){
-            vch.setVoucherCode(voucherDTO.getVoucherCode());
-            vch.setDiscount(voucherDTO.getDiscount());
-            vch.setVoucher_status(voucherDTO.getVoucher_status());
+            vch.setCode(voucherDTO.getCode());
+            vch.setDiscountAmount(voucherDTO.getDiscountAmount());
+            vch.setExpirationDate(voucherDTO.getExpirationDate());
+            vch.setIsActive(voucherDTO.getIsActive());
+            vch.setMinOrderValue(voucherDTO.getMinOrderValue());
             return voucherRepository.save(vch);
         }
         return null;
     }
 
     @Override
-    public Voucher deleteVoucher(int voucher_Id) {
-        Voucher vch = voucherRepository.findById(voucher_Id).orElse(null);
+    public VoucherEntity deleteVoucher(long voucher_Id) {
+        VoucherEntity vch = voucherRepository.findById(voucher_Id).orElse(null);
         if(vch != null){
             voucherRepository.delete(vch);
             return vch;
@@ -46,18 +50,22 @@ public class VoucherService implements IVoucherService {
     }
 
     @Override
-    public Voucher getVoucher(int voucher_Id) {
+    public VoucherEntity getVoucher(long voucher_Id) {
         return voucherRepository.findById(voucher_Id).orElse(null);
     }
 
     @Override
-    public List<Voucher> getVoucherByCode(String voucherCode) {
-        return voucherRepository.findByVoucherCode(voucherCode);
+    public List<VoucherEntity> getVoucherByCode(String code) {
+        return voucherRepository.findByCode(code);
     }
 
     @Override
-    public List<Voucher> getAllVouchers() {
+    public List<VoucherEntity> getAllVouchers() {
         return voucherRepository.findAll();
     }
 
+    @Override
+    public boolean existsByCode(String code) {
+        return voucherRepository.existsByCode(code);
+    }
 }
