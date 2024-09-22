@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/${api.prefix}/product")
 @RequiredArgsConstructor
-public class productController {
+public class ProductController {
     private final ProductService productService;
 
 
@@ -45,7 +45,7 @@ public class productController {
 
         ApiResponse apiResponse = ApiResponse.builder()
                 .status(HttpStatus.OK.value())
-                .message("Show students sucessfully")
+                .message("Show products sucessfully")
                 .data(productListResponse) // List of students
                 .build();
 

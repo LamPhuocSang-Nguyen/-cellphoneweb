@@ -26,13 +26,14 @@ public class OrderService implements IOrderService{
 
     @Override
     public OrderEntity saveOrder(OrderDTO orderDTO) {
-        OrderEntity orderEntity =OrderEntity
+        OrderEntity orderEntity = OrderEntity
                 .builder()
                 .address(orderDTO.getAddress())
                 .note(orderDTO.getNote())
                 .orderDate(orderDTO.getOrderDate())
                 .totalMoney(orderDTO.getTotalMoney())
                 .shippingMethod(orderDTO.getShippingMethod())
+                .shippingAddress(orderDTO.getShippingAddress())
                 .shippingDate((orderDTO.getShippingDate()))
                 .trackingNumber(orderDTO.getTrackingNumber())
                 .paymentMethod(orderDTO.getPaymentMethod())
@@ -43,16 +44,27 @@ public class OrderService implements IOrderService{
 
     @Override
     public OrderEntity updateOrder(long id, OrderDTO orderDTO) {
-        return null;
+        OrderEntity orderEntity = getOrderById(id);
+        orderEntity.setAddress(orderDTO.getAddress());
+        orderEntity.setNote(orderDTO.getNote());
+        orderEntity.setOrderDate(orderDTO.getOrderDate());
+        orderEntity.setTotalMoney(orderDTO.getTotalMoney());
+        orderEntity.setShippingMethod(orderDTO.getShippingMethod());
+        orderEntity.setShippingAddress(orderDTO.getShippingAddress());
+        orderEntity.setShippingDate(orderDTO.getShippingDate());
+        orderEntity.setTrackingNumber(orderDTO.getTrackingNumber());
+        orderEntity.setPaymentMethod(orderDTO.getPaymentMethod());
+
+        return orderRepository.save(orderEntity);
     }
 
     @Override
     public void deleteOrder(long id) {
-
+        orderRepository.deleteById(id);
     }
 
     @Override
     public Page<OrderEntity> getOrders(Pageable pageable) {
-        return null;
+        return orderRepository.findAll(pageable);
     }
 }
