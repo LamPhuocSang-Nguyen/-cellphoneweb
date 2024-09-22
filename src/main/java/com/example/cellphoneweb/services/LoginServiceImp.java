@@ -60,7 +60,7 @@ public class LoginServiceImp implements ILoginServiceImp{
         return null;
     }
 
-    public ResponseEntity<?> loginWithUserNameAndPassword(String username, String password) throws JsonProcessingException {
+    public ApiReponse loginWithUserNameAndPassword(String username, String password) throws JsonProcessingException {
         try {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
             Authentication authentication = authenticationManager.authenticate(token);
@@ -71,11 +71,22 @@ public class LoginServiceImp implements ILoginServiceImp{
 
             UserEntity userEntity = checkLogin(username, password);
             if (userEntity != null) {
-                // Xử lý khi người dùng tồn tại
-                TokenEntity tokenEntity = new TokenEntity();
-                tokenEntity.setAcessToken(jwtToken);
-                tokenEntity.setRefresToken(jwtTokenRefresh);
-                tokenEntity.setUser(userEntity);
+                // Check if the user already has a token record
+                TokenEntity tokenEntity = tokenRepository.findByUserId(userEntity.getId());
+
+                if (tokenEntity != null) {
+                    // Update existing token
+                    tokenEntity.setAcessToken(jwtToken);
+                    tokenEntity.setRefresToken(jwtTokenRefresh);
+                } else {
+                    // Create a new token record if it doesn't exist
+                    tokenEntity = new TokenEntity();
+                    tokenEntity.setAcessToken(jwtToken);
+                    tokenEntity.setRefresToken(jwtTokenRefresh);
+                    tokenEntity.setUser(userEntity);
+                }
+
+                // Save the token entity (will update if it already exists)
                 tokenRepository.save(tokenEntity);
 
                 TokenDTO tokenDTO = TokenDTO.builder()
@@ -83,38 +94,28 @@ public class LoginServiceImp implements ILoginServiceImp{
                         .refreshToken(tokenEntity.getRefresToken())
                         .build();
 
-                ApiReponse apiReponse = ApiReponse.builder()
+                return ApiReponse.builder()
                         .message("OKOK")
                         .data(tokenDTO)
                         .build();
-
-                return new ResponseEntity<>(apiReponse, HttpStatus.OK);
             } else {
-                // Xử lý khi người dùng không tồn tại
-                ApiReponse baseResponse = ApiReponse.builder()
+                return ApiReponse.builder()
                         .message("Login Fail")
                         .data("Invalid username or password")
                         .build();
-
-                return new ResponseEntity<>(baseResponse, HttpStatus.UNAUTHORIZED);
             }
         } catch (UsernameNotFoundException e) {
-            // Xử lý khi người dùng không tồn tại
-            ApiReponse baseResponse = ApiReponse.builder()
+            return ApiReponse.builder()
                     .message("Login Fail")
                     .data("Co loi :" + e.getMessage())
                     .build();
-
-            return new ResponseEntity<>(baseResponse, HttpStatus.UNAUTHORIZED);
         } catch (BadCredentialsException e) {
-            // Xử lý khi tài khoản bị cấm
-            ApiReponse baseResponse = ApiReponse.builder()
+            return ApiReponse.builder()
                     .message("Login Fail")
                     .data("User is banned")
                     .build();
-
-            return new ResponseEntity<>(baseResponse, HttpStatus.UNAUTHORIZED);
         }
     }
+
 
 }

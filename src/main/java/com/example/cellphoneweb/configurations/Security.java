@@ -49,9 +49,9 @@ public class Security {
                 .cors(Customizer.withDefaults())
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/login/**","/designStyle/**","/project/**","/quote/**","/type/**","/role/**").permitAll()
+                                .requestMatchers("/login/test").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
-//                                .requestMatchers("/dashboard/**").permitAll()
+                                .requestMatchers("/user/register").hasAnyRole("USER")
 //                                .requestMatchers("/product/**","/rawMaterial/**").hasAnyRole("ADMIN","USER","STAFF")
 //                                .requestMatchers("/room/**").hasAnyRole("ADMIN","USER","STAFF")
 //                                .requestMatchers("/quoteDetail/**").hasAnyRole("ADMIN","STAFF","USER")

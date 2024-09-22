@@ -78,13 +78,19 @@ public class JwtHelper {
                 .compact();
     }
 
+    // Check if refresh token is expired
+    public boolean isRefreshTokenExpired(String token) {
+        return extractRefreshExpiration(token).before(new Date());
+    }
+
+    private Date extractRefreshExpiration(String token) {
+        return Jwts.parser().setSigningKey(refreshKey).parseClaimsJws(token).getBody().getExpiration();
+    }
+
     public Claims decodeToken(String token) {
         return Jwts.parser()
                 .setSigningKey(strKey)
                 .parseClaimsJws(token)
                 .getBody();
     }
-
-
-
 }
