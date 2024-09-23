@@ -18,9 +18,9 @@ public class OrderEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    // @ManyToOne
-    // @JoinColumn(name = "user_id", nullable = false)
-    // private UserEntity user;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private UserEntity user;
 
     @Column(nullable = false)
     private String address;

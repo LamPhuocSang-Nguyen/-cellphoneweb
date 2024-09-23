@@ -3,7 +3,7 @@ package com.example.cellphoneweb.controllers;
 
 import com.example.cellphoneweb.dtos.ProductDTO;
 import com.example.cellphoneweb.exceptions.ResourceNotFoundException;
-import com.example.cellphoneweb.models.Product;
+import com.example.cellphoneweb.models.ProductEntity;
 import com.example.cellphoneweb.responses.ApiResponse;
 import com.example.cellphoneweb.responses.ProductListResponse;
 import com.example.cellphoneweb.responses.ProductResponse;
@@ -28,11 +28,10 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> getProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<Product> productResponses= productService.getProducts(pageable);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createAt").descending());
+        Page<ProductEntity> productResponses= productService.getProducts(pageable);
         int totalPage = productResponses.getTotalPages();
         List<ProductResponse> responseList= productResponses.getContent().stream()
                 .map(product -> ProductResponse.fromProduct(product))
@@ -45,10 +44,9 @@ public class ProductController {
 
         ApiResponse apiResponse = ApiResponse.builder()
                 .status(HttpStatus.OK.value())
-                .message("Show products sucessfully")
+                .message("Show students sucessfully")
                 .data(productListResponse) // List of students
                 .build();
-
         return ResponseEntity.ok(apiResponse);
     }
 
@@ -59,10 +57,8 @@ public class ProductController {
                 .status(HttpStatus.OK.value())
                 .message("OK")
                 .build();
-
         return ResponseEntity.ok().body(apiResponse);
     }
-
 
     @PostMapping("/admin/add")
     public ResponseEntity<ApiResponse> addingProduct(@Valid @RequestBody ProductDTO productDTO, BindingResult result){
@@ -76,19 +72,18 @@ public class ProductController {
                     .build();
             return ResponseEntity.badRequest().body(apiResponse);
         }
-        Product product = productService.saveProduct(productDTO);
+        ProductEntity product = productService.saveProduct(productDTO);
 
         ApiResponse apiResponse = ApiResponse.builder()
                 .data(product)
                 .message("Insert sucessfully")
                 .status(HttpStatus.OK.value())
                 .build();
-
         return ResponseEntity.ok(apiResponse);
     }
 
     @PutMapping("/admin/edit/{id}")
-    public ResponseEntity<ApiResponse> editProduct(@PathVariable int id, @Valid @RequestBody ProductDTO productDTO, BindingResult result){
+    public ResponseEntity<ApiResponse> editProduct(@PathVariable long id, @Valid @RequestBody ProductDTO productDTO, BindingResult result){
         if(result.hasErrors()){
             List<String> errors = result.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage).toList();
@@ -97,14 +92,12 @@ public class ProductController {
                     .message("Validation failed")
                     .status(HttpStatus.BAD_REQUEST.value())
                     .build();
-
             return ResponseEntity.badRequest().body(apiResponse);
         }
-        Product product = productService.updateProduct(id,productDTO);
+        ProductEntity product = productService.updateProduct(id,productDTO);
         if(product == null){
-            throw new ResourceNotFoundException("Product khong tim thay voi id "+ id);
+            throw new ResourceNotFoundException("Product không tìm thấy với id "+ id);
         }
-
         ApiResponse apiResponse = ApiResponse.builder()
                 .data(product)
                 .message("Updated sucessfully")
@@ -113,12 +106,11 @@ public class ProductController {
         return ResponseEntity.ok(apiResponse);
     }
 
-
     @DeleteMapping("/admin/delete/{id}")
-    public ResponseEntity<ApiResponse> delete(@PathVariable int id){
-        Product product = productService.getProductById(id);
+    public ResponseEntity<ApiResponse> delete(@PathVariable long id){
+        ProductEntity product = productService.getProductById(id);
         if(product == null){
-            throw new ResourceNotFoundException("Product khong tim thay voi id "+ id);
+            throw new ResourceNotFoundException("Product không tìm thấy với id "+ id);
         }
         productService.deleteProduct(id);
         ApiResponse apiResponse = ApiResponse.builder()

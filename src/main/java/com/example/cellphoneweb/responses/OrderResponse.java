@@ -2,15 +2,8 @@ package com.example.cellphoneweb.responses;
 
 import java.util.Date;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import com.example.cellphoneweb.models.OrderEntity;
-import com.example.cellphoneweb.models.Product;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

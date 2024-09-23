@@ -38,8 +38,8 @@ public class UserEntity extends BaseEntity{
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private Set<CartEntity> carts;
 
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private Set<OrderEntity> orders;
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private Set<OrderEntity> orders;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)

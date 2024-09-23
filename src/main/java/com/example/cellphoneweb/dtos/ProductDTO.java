@@ -1,9 +1,12 @@
 package com.example.cellphoneweb.dtos;
 
+import com.example.cellphoneweb.models.CategoryEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.math.BigDecimal;
 
 
 @Getter
@@ -21,10 +24,12 @@ public class ProductDTO {
     private String productDescription;
 
     @NotBlank(message = "Giá của sản phẩm không được bỏ trống")
-    private double price;
+    private BigDecimal price;
 
-//    private int categoryId;
-
-    @NotNull(message = "Xep loai khong duoc trong")
+    @NotNull(message = "Số lượng trong kho không được để trống")
     private int quantityInStock;
+
+    @NotNull(message = "category khong duoc trong")
+    private CategoryEntity category;
+
 }
