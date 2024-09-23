@@ -4,7 +4,7 @@ package com.example.cellphoneweb.controllers;
 import com.example.cellphoneweb.dtos.ProductDTO;
 import com.example.cellphoneweb.exceptions.ResourceNotFoundException;
 import com.example.cellphoneweb.models.Product;
-import com.example.cellphoneweb.responses.ApiReponse;
+import com.example.cellphoneweb.responses.ApiResponse;
 import com.example.cellphoneweb.responses.ProductListResponse;
 import com.example.cellphoneweb.responses.ProductResponse;
 import com.example.cellphoneweb.services.ProductService;
@@ -25,12 +25,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/${api.prefix}/product")
 @RequiredArgsConstructor
-public class productController {
+public class ProductController {
     private final ProductService productService;
 
 
     @GetMapping("/list")
-    public ResponseEntity<ApiReponse> getProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
+    public ResponseEntity<ApiResponse> getProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Product> productResponses= productService.getProducts(pageable);
         int totalPage = productResponses.getTotalPages();
@@ -43,69 +43,69 @@ public class productController {
                 .totalPages(totalPage)
                 .build();
 
-        ApiReponse apiReponse = ApiReponse.builder()
+        ApiResponse apiResponse = ApiResponse.builder()
                 .status(HttpStatus.OK.value())
-                .message("Show students sucessfully")
+                .message("Show products sucessfully")
                 .data(productListResponse) // List of students
                 .build();
 
-        return ResponseEntity.ok(apiReponse);
+        return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<ApiReponse> getAll(){
-        ApiReponse apiReponse = ApiReponse.builder()
+    public ResponseEntity<ApiResponse> getAll(){
+        ApiResponse apiResponse = ApiResponse.builder()
                 .data(productService.getAllProducts())
                 .status(HttpStatus.OK.value())
                 .message("OK")
                 .build();
 
-        return ResponseEntity.ok().body(apiReponse);
+        return ResponseEntity.ok().body(apiResponse);
     }
 
 
     @PostMapping("/admin/add")
-    public ResponseEntity<ApiReponse> addingProduct(@Valid @RequestBody ProductDTO productDTO, BindingResult result){
+    public ResponseEntity<ApiResponse> addingProduct(@Valid @RequestBody ProductDTO productDTO, BindingResult result){
         if(result.hasErrors()){
             List<String> errors = result.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage).toList();
-            ApiReponse apiReponse = ApiReponse.builder()
+            ApiResponse apiResponse = ApiResponse.builder()
                     .data(errors)
                     .message("Validation failed")
                     .status(HttpStatus.BAD_REQUEST.value())
                     .build();
-            return ResponseEntity.badRequest().body(apiReponse);
+            return ResponseEntity.badRequest().body(apiResponse);
         }
         Product product = productService.saveProduct(productDTO);
 
-        ApiReponse apiReponse = ApiReponse.builder()
+        ApiResponse apiResponse = ApiResponse.builder()
                 .data(product)
                 .message("Insert sucessfully")
                 .status(HttpStatus.OK.value())
                 .build();
 
-        return ResponseEntity.ok(apiReponse);
+        return ResponseEntity.ok(apiResponse);
     }
 
     @PutMapping("/admin/edit/{id}")
-    public ResponseEntity<ApiReponse> editProduct(@PathVariable int id, @Valid @RequestBody ProductDTO productDTO, BindingResult result){
+    public ResponseEntity<ApiResponse> editProduct(@PathVariable int id, @Valid @RequestBody ProductDTO productDTO, BindingResult result){
         if(result.hasErrors()){
             List<String> errors = result.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage).toList();
-            ApiReponse apiReponse = ApiReponse.builder()
+            ApiResponse apiResponse = ApiResponse.builder()
                     .data(errors)
                     .message("Validation failed")
                     .status(HttpStatus.BAD_REQUEST.value())
                     .build();
 
-            return ResponseEntity.badRequest().body(apiReponse);
+            return ResponseEntity.badRequest().body(apiResponse);
         }
         Product product = productService.updateProduct(id,productDTO);
         if(product == null){
             throw new ResourceNotFoundException("Product khong tim thay voi id "+ id);
         }
 
-        ApiReponse apiResponse = ApiReponse.builder()
+        ApiResponse apiResponse = ApiResponse.builder()
                 .data(product)
                 .message("Updated sucessfully")
                 .status(HttpStatus.OK.value())
@@ -115,17 +115,17 @@ public class productController {
 
 
     @DeleteMapping("/admin/delete/{id}")
-    public ResponseEntity<ApiReponse> delete(@PathVariable int id){
+    public ResponseEntity<ApiResponse> delete(@PathVariable int id){
         Product product = productService.getProductById(id);
         if(product == null){
             throw new ResourceNotFoundException("Product khong tim thay voi id "+ id);
         }
         productService.deleteProduct(id);
-        ApiReponse apiReponse = ApiReponse.builder()
+        ApiResponse apiResponse = ApiResponse.builder()
                 .data(id)
                 .message("Delete sucessfully")
                 .status(HttpStatus.OK.value())
                 .build();
-        return ResponseEntity.ok(apiReponse);
+        return ResponseEntity.ok(apiResponse);
     }
 }
