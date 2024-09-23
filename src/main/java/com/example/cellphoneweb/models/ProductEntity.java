@@ -1,6 +1,8 @@
 package com.example.cellphoneweb.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -29,6 +31,7 @@ public class ProductEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
+    @NotBlank(message = "Catalog category is required")
     private CategoryEntity category;
 
     @Column(name = "quantity_in_stock")
@@ -37,8 +40,8 @@ public class ProductEntity extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true) // Mối quan hệ 1-n với OrderDetailEntity
     private Set<OrderDetailEntity> orderDetails;
 
-    @OneToMany(mappedBy = "productImg", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ImageProductEntity> imageProductEntities;
+//    @OneToMany(mappedBy = "productImg", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private Set<ImageProductEntity> imageProductEntities;
 
 //    @OneToMany(mappedBy = "productCart", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private Set<CartEntity> carts;

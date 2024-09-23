@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -19,7 +19,7 @@ public class VoucherDTO {
 
     @JsonProperty("code")
     @NotBlank(message = "voucher_code is required")
-    @Length(min = 3, max = 20, message = "voucherCode must be between 3 and 20 characters")
+    @Size(min = 3, max = 20, message = "voucherCode must be between 3 and 20 characters")
     private String code;
 
     @JsonProperty("discountAmount")
