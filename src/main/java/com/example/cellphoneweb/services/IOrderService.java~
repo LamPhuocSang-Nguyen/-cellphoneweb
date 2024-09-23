@@ -1,8 +1,6 @@
 package com.example.cellphoneweb.services;
 
 import com.example.cellphoneweb.dtos.OrderDTO;
-import com.example.cellphoneweb.dtos.OrderDetailDTO;
-import com.example.cellphoneweb.models.OrderDetailEntity;
 import com.example.cellphoneweb.models.OrderEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +14,4 @@ public interface IOrderService {
     OrderEntity updateOrder(long id, OrderDTO orderDTO);
     void deleteOrder(long id);
     Page<OrderEntity> getOrders(Pageable pageable);
-
-    List<OrderDetailEntity> getOrderDetailsByOrderId(long orderId);
-    List<OrderDetailEntity> saveOrderDetails(long orderId, List<Long> productIds, List<Integer> quantities);
-    OrderDetailEntity updateOrderDetail(long orderDetailId, OrderDetailDTO orderDetailDTO);
 }

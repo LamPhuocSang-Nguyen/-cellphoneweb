@@ -49,10 +49,10 @@ public class OrderEntity extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderDetailEntity> orderDetails;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<InvoiceEntity> invoices; // Mối quan hệ 1-n với InvoiceEntity
-
-    @ManyToOne
-    @JoinColumn(name = "voucher_id")
-    private VoucherEntity voucher; // Mối quan hệ với VoucherEntity
+//    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private Set<InvoiceEntity> invoices; // Mối quan hệ 1-n với InvoiceEntity
+//
+//    @ManyToOne
+//    @JoinColumn(name = "voucher_id")
+//    private VoucherEntity voucher; // Mối quan hệ với VoucherEntity
 }
