@@ -1,14 +1,18 @@
 package com.example.cellphoneweb.filter;
 
+import com.example.cellphoneweb.exceptions.TokenExpiredException;
 import com.example.cellphoneweb.jwt.JwtHelper;
+import com.example.cellphoneweb.responses.ApiResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -42,25 +46,46 @@ public class JwtFilter extends OncePerRequestFilter {
             if (!token.isEmpty()) {
                 try {
                     Claims claims = jwtHelper.decodeToken(token);
-                    String data = claims.getSubject();
+                    String role = claims.getSubject(); // This is your single role
                     Date expirationDate = claims.getExpiration();
-                    System.out.println(data);
-                    Type listType = new TypeToken<ArrayList<SimpleGrantedAuthority>>() {}.getType();
+                    System.out.println(role);
 
-                    List<GrantedAuthority> listRoles = gson.fromJson(data, listType);
+                    // Create a list of GrantedAuthority from the single role
+                    List<GrantedAuthority> listRoles = new ArrayList<>();
+                    if (role != null && !role.isEmpty()) {
+                        listRoles.add(new SimpleGrantedAuthority(role));
+                    }
 
                     if (!listRoles.isEmpty()) {
-                        // Tạo context holder
+                        // Set up the security context
                         UsernamePasswordAuthenticationToken authenticationToken =
                                 new UsernamePasswordAuthenticationToken(null, null, listRoles);
                         SecurityContext securityContext = SecurityContextHolder.getContext();
                         securityContext.setAuthentication(authenticationToken);
                     }
-                } catch (Exception e) {
-                    System.out.println("Kiem tra loi");
-                    // Xử lý exception
-                    System.out.println(e.getMessage());
+                } catch (ExpiredJwtException e) {
+                    ApiResponse apiResponse = ApiResponse.builder()
+                            .status(HttpStatus.UNAUTHORIZED.value())
+                            .message("Token has expired")
+                            .data(null)
+                            .build();
 
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    response.setContentType("application/json");
+                    response.getWriter().write(new Gson().toJson(apiResponse));
+                    return; // Stop further processing
+                } catch (Exception e) {
+                    System.out.println("An error occurred: " + e.getMessage());
+                    ApiResponse apiResponse = ApiResponse.builder()
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .message("An error occurred while processing the token: " + e.getMessage())
+                            .data(null)
+                            .build();
+
+                    response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    response.setContentType("application/json");
+                    response.getWriter().write(new Gson().toJson(apiResponse));
+                    return; // Stop further processing
                 }
             }
         }

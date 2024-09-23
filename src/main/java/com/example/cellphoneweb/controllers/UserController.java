@@ -1,14 +1,13 @@
 package com.example.cellphoneweb.controllers;
 
 import com.example.cellphoneweb.dtos.UserDTO;
-import com.example.cellphoneweb.responses.ApiReponse;
+import com.example.cellphoneweb.responses.ApiResponse;
 import com.example.cellphoneweb.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,13 +22,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiReponse>  register(@Valid @RequestBody UserDTO  userDTO, BindingResult result){
+    public ResponseEntity<ApiResponse>  register(@Valid @RequestBody UserDTO  userDTO, BindingResult result){
         if(result.hasErrors()){
             List<String> errors = result.getFieldErrors()
                     .stream()
                     .map(fieldError -> fieldError.getDefaultMessage())
                     .toList();
-            ApiReponse apiReponse = ApiReponse.builder()
+            ApiResponse apiReponse = ApiResponse.builder()
                     .data(errors)
                     .message("Error")
                     .status(HttpStatus.BAD_REQUEST.value())
@@ -37,7 +36,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(apiReponse);
 
         }
-        ApiReponse apiReponse = ApiReponse.builder()
+        ApiResponse apiReponse = ApiResponse.builder()
                 .data(userService.register(userDTO))
                 .message("Successfull")
                 .status(HttpStatus.OK.value())

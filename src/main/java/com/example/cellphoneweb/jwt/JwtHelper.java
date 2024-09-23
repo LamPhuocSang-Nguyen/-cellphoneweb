@@ -35,8 +35,8 @@ public class JwtHelper {
 
     private String createToken(Map<String, Object> claims, String subject) {
         long nowMillis = System.currentTimeMillis();
-        long expiryMillis = nowMillis + expiryHour * 3600 * 1000; // expiry in hours
-
+//        long expiryMillis = nowMillis + expiryHour * 3600 * 1000; // expiry in hours
+        long expiryMillis = nowMillis + 10 * 1000;
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
@@ -51,7 +51,7 @@ public class JwtHelper {
         return (extractedUsername.equals(username) && !isTokenExpired(token));
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -68,7 +68,7 @@ public class JwtHelper {
         Map<String, Object> claims = new HashMap<>();
         long nowMillis = System.currentTimeMillis();
         long expiryMillis = nowMillis + expiryDay * 24 * 3600 * 1000; // expiry in days
-
+//        long expiryMillis = nowMillis + 10 * 1000;
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
@@ -91,6 +91,13 @@ public class JwtHelper {
         return Jwts.parser()
                 .setSigningKey(strKey)
                 .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public Claims decodeRefreshToken(String refreshToken) {
+        return Jwts.parser()
+                .setSigningKey(refreshKey)
+                .parseClaimsJws(refreshToken)
                 .getBody();
     }
 }
