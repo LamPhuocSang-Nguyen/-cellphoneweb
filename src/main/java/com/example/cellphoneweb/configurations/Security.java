@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,6 +24,9 @@ public class Security {
 
     @Autowired
     private JwtFilter jwtFilter;
+
+    @Autowired
+    private CorsFilter corsFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -46,12 +48,12 @@ public class Security {
                         sessionManagement
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .cors(Customizer.withDefaults())
+//                .cors(Customizer.withDefaults())
+                .addFilterAfter(corsFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/login/**","/user/register").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
-                                .requestMatchers("/user/register").hasAnyRole("USER")
                                 .anyRequest().authenticated()
 
 
