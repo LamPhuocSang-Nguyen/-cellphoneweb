@@ -12,12 +12,13 @@ import java.util.List;
 public interface IOrderService {
     OrderEntity getOrderById(long id);
     List<OrderEntity> getAllOrders();
-    OrderEntity saveOrder(OrderDTO orderDTO);
+    OrderEntity saveOrder(OrderDTO orderDTO, List<Long> productIds, List<Integer> quantities, List<String> colors);
     OrderEntity updateOrder(long id, OrderDTO orderDTO);
     void deleteOrder(long id);
     Page<OrderEntity> getOrders(Pageable pageable);
 
     List<OrderDetailEntity> getOrderDetailsByOrderId(long orderId);
-    List<OrderDetailEntity> saveOrderDetails(long orderId, List<Long> productIds, List<Integer> quantities);
+    List<OrderDetailEntity> saveOrderDetails(long orderId, List<Long> productIds, List<Integer> quantities, List<String> colors);
     OrderDetailEntity updateOrderDetail(long orderDetailId, OrderDetailDTO orderDetailDTO);
+    OrderDetailEntity getOrderDetailById(long orderDetailId);
 }

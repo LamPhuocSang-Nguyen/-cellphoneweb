@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> handleGeneralException(Exception ex, HttpServletRequest request){
         ApiResponse response = ApiResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("An unexpected error occurred" + ex.getMessage())
+                .message(ex.getMessage())
                 .data(null)
                 .build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> handleResourceNotFoundException(ResourceNotFoundException ex){
         ApiResponse response = ApiResponse.builder()
                 .status(HttpStatus.NOT_FOUND.value())
-                .message("Resource not found " + ex.getMessage())
+                .message(ex.getMessage())
                 .data(null)
                 .build();
 
