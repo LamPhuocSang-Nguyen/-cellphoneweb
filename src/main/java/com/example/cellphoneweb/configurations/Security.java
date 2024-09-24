@@ -49,9 +49,9 @@ public class Security {
                 .cors(Customizer.withDefaults())
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/login/**","/user/register").permitAll()
+                                .requestMatchers("/api/v1/login/**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
-                                .requestMatchers("/user/register").hasAnyRole("USER")
+                                .requestMatchers("/api/v1/order/**").hasAnyRole("USER")
                                 .anyRequest().authenticated()
 
 

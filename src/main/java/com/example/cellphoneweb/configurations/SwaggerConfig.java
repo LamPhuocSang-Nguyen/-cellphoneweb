@@ -59,6 +59,22 @@ public class SwaggerConfig {
                 .build();
     }
 
+    @Bean
+    public GroupedOpenApi publicApi3(){
+        return GroupedOpenApi.builder()
+                .group("order-api")
+                .pathsToMatch("/api/v1/login/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi publicApi4(){
+        return GroupedOpenApi.builder()
+                .group("order-api")
+                .pathsToMatch("/api/v1/user/**")
+                .build();
+    }
+
 
 
 }

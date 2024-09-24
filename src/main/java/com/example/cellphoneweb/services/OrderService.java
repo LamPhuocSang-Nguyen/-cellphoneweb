@@ -1,9 +1,14 @@
 package com.example.cellphoneweb.services;
 
 import com.example.cellphoneweb.dtos.OrderDTO;
+import com.example.cellphoneweb.exceptions.ConflictException;
 import com.example.cellphoneweb.models.OrderEntity;
+import com.example.cellphoneweb.models.OrderStatus;
+import com.example.cellphoneweb.models.UserEntity;
 import com.example.cellphoneweb.repositorise.OrderRepository;
+import com.example.cellphoneweb.repositorise.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,6 +18,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService implements IOrderService{
     private final OrderRepository orderRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public OrderEntity getOrderById(long id) {
@@ -26,6 +34,7 @@ public class OrderService implements IOrderService{
 
     @Override
     public OrderEntity saveOrder(OrderDTO orderDTO) {
+        UserEntity userEntity = userRepository.findById(orderDTO.getUserId()).orElse(null);
         OrderEntity orderEntity = OrderEntity
                 .builder()
                 .address(orderDTO.getAddress())
@@ -37,6 +46,7 @@ public class OrderService implements IOrderService{
                 .shippingDate((orderDTO.getShippingDate()))
                 .trackingNumber(orderDTO.getTrackingNumber())
                 .paymentMethod(orderDTO.getPaymentMethod())
+                .user(userEntity)
                 .build();
 
         return orderRepository.save(orderEntity);
@@ -60,7 +70,12 @@ public class OrderService implements IOrderService{
 
     @Override
     public void deleteOrder(long id) {
-        orderRepository.deleteById(id);
+        OrderEntity orderEntity =orderRepository.findById(id).orElse(null);
+        if(orderEntity!=null && orderEntity.getStatus() == OrderStatus.PENDING){
+            orderRepository.deleteById(id);
+        }else if(orderEntity!=null){
+            throw new ConflictException("Can not canceled because the order status is: " + orderEntity.getStatus());
+        }
     }
 
     @Override

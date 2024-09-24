@@ -18,7 +18,7 @@ import java.util.List;
 import static org.springframework.http.HttpHeaders.REFERER;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/${api.prefix}/login")
 public class LoginController {
 
     @Autowired

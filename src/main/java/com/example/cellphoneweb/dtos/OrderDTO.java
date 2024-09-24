@@ -2,6 +2,7 @@ package com.example.cellphoneweb.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -17,6 +18,10 @@ import java.util.Date;
 @Data
 @Builder
 public class OrderDTO {
+
+    @JsonProperty("user_id")
+    private long userId;
+
     @JsonProperty("address")
     @NotBlank(message = "dia chi sản phâm không được để trống")
     @Size(min = 2 ,max = 50, message = "Tên sản phẩm phải có từ 2 đến 50 ký tự")
@@ -33,7 +38,8 @@ public class OrderDTO {
     private Date orderDate;
 
     @JsonProperty("totalMoney")
-    @NotBlank(message = "Giá của sản phẩm không được bỏ trống")
+//    @NotBlank(message = "Giá của sản phẩm không được bỏ trống")
+    @NotNull
     private Float totalMoney;
 
 

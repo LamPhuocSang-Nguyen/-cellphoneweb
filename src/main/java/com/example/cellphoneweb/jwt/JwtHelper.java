@@ -35,8 +35,8 @@ public class JwtHelper {
 
     private String createToken(Map<String, Object> claims, String subject) {
         long nowMillis = System.currentTimeMillis();
-//        long expiryMillis = nowMillis + expiryHour * 3600 * 1000; // expiry in hours
-        long expiryMillis = nowMillis + 10 * 1000;
+        long expiryMillis = nowMillis + expiryHour * 3600 * 1000; // expiry in hours
+//        long expiryMillis = nowMillis + 10 * 1000;
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
