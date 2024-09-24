@@ -52,6 +52,8 @@ public class Security {
                                 .requestMatchers("/login/**","/user/register").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
                                 .requestMatchers("/user/register").hasAnyRole("USER")
+                                .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                                .requestMatchers("/api/v1/order/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
 
 

@@ -2,9 +2,9 @@ package com.example.cellphoneweb.services;
 
 import com.example.cellphoneweb.dtos.TokenDTO;
 import com.example.cellphoneweb.jwt.JwtHelper;
+import com.example.cellphoneweb.models.Role;
 import com.example.cellphoneweb.models.TokenEntity;
 import com.example.cellphoneweb.models.UserEntity;
-import com.example.cellphoneweb.repositorise.RoleRepository;
 import com.example.cellphoneweb.repositorise.TokenRepository;
 import com.example.cellphoneweb.repositorise.UserRepository;
 import com.example.cellphoneweb.responses.ApiResponse;
@@ -37,8 +37,8 @@ public class LoginServiceImp implements ILoginServiceImp{
     private TokenRepository tokenRepository;
 
 
-    @Autowired
-    private RoleRepository roleRepository;
+//    @Autowired
+//    private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -74,7 +74,7 @@ public class LoginServiceImp implements ILoginServiceImp{
         if (user == null) {
             throw new RuntimeException("User not found.");
         }
-        String role = user.getRole().getName();
+        String role = user.getRole();
 
         // Create a new access token
         String jwtToken = jwtHelper.generateToken(role);

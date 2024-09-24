@@ -1,9 +1,8 @@
 package com.example.cellphoneweb.services;
 
 import com.example.cellphoneweb.dtos.UserDTO;
-import com.example.cellphoneweb.models.RoleEntity;
 import com.example.cellphoneweb.models.UserEntity;
-import com.example.cellphoneweb.repositorise.RoleRepository;
+//import com.example.cellphoneweb.repositorise.RoleRepository;
 import com.example.cellphoneweb.repositorise.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +18,8 @@ public class UserService implements IUserService{
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+//    @Autowired
+//    private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -32,12 +31,12 @@ public class UserService implements IUserService{
             throw new RuntimeException("Username already exists");
         }
 
-        RoleEntity roleEntity = roleRepository.findByName("ROLE_USER");
-        if (roleEntity == null) {
-            roleEntity = new RoleEntity();
-            roleEntity.setName("ROLE_USER");
-            roleRepository.save(roleEntity);
-        }
+//        Role roleEntity = roleRepository.findByName("ROLE_USER");
+//        if (roleEntity == null) {
+//            roleEntity = new RoleEntity();
+//            roleEntity.setName("ROLE_USER");
+//            roleRepository.save(roleEntity);
+//        }
 
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         UserEntity userEntity = UserEntity.builder()
@@ -47,7 +46,7 @@ public class UserService implements IUserService{
                 .isActive(true)
                 .email(userDTO.getEmail())
                 .phoneNumber(userDTO.getPhoneNumber())
-                .role(roleEntity)
+                .role(userDTO.getRole())
                 .build();
 
         return userRepository.save(userEntity);

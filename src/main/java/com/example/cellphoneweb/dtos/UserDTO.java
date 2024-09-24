@@ -1,6 +1,7 @@
 package com.example.cellphoneweb.dtos;
 
 
+import com.example.cellphoneweb.models.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -35,5 +36,6 @@ public class UserDTO {
 
     private Boolean isActive;
 
+    @NotBlank(message = "Role is required")
     private String role;
 }
