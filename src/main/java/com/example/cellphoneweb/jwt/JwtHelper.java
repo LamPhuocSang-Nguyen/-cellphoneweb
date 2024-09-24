@@ -3,12 +3,9 @@ package com.example.cellphoneweb.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +33,7 @@ public class JwtHelper {
     private String createToken(Map<String, Object> claims, String subject) {
         long nowMillis = System.currentTimeMillis();
 //        long expiryMillis = nowMillis + expiryHour * 3600 * 1000; // expiry in hours
-        long expiryMillis = nowMillis + 10 * 1000;
+        long expiryMillis = nowMillis + 3600 * 1000;
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
