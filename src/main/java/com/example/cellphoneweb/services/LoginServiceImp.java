@@ -84,12 +84,14 @@ public class LoginServiceImp implements ILoginServiceImp{
         TokenEntity tokenEntity = tokenRepository.findByUserId(user.getId());
         tokenEntity.setAcessToken(jwtToken);
         tokenEntity.setRefresToken(refreshToken);
+        tokenEntity.setUser(user);
         tokenRepository.save(tokenEntity);
 
         // Create a TokenDTO to return
         TokenDTO tokenDTO = new TokenDTO();
         tokenDTO.setAccessToken(jwtToken);
         tokenDTO.setRefreshToken(refreshToken);
+        tokenDTO.setUserEntity(user);
         // Optional if you want to return the new refresh token
 
         return tokenDTO;
@@ -128,6 +130,7 @@ public class LoginServiceImp implements ILoginServiceImp{
                 TokenDTO tokenDTO = TokenDTO.builder()
                         .accessToken(tokenEntity.getAcessToken())
                         .refreshToken(tokenEntity.getRefresToken())
+                        .userEntity(tokenEntity.getUser())
                         .build();
 
                 return ApiResponse.builder()

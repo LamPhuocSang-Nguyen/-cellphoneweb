@@ -58,7 +58,11 @@ public class UserService implements IUserService{
         return userRepository.findByUsername(username);
     }
 
-
+    public void activate(String username){
+        UserEntity user = userRepository.findByUsername(username);
+        user.setIsActive(true);
+        userRepository.save(user);
+    }
 
 //    @Override
 //    public User getUserDetailsFromToken(String token) throws RuntimeException {
