@@ -1,5 +1,6 @@
 package com.example.cellphoneweb.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,23 +14,19 @@ import lombok.*;
 public class OrderDetailEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+    private long id;
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
-    private OrderEntity order; // Mối quan hệ n-1 với OrderEntity
+    @JsonIgnore
+    private OrderEntity order;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-    private ProductEntity product; // Mối quan hệ n-1 với ProductEntity
+    @JsonIgnore
+    private ProductEntity product;
 
-    private Float price;
-
-    @Column(name = "number_of_products")
-    private Integer numberOfProducts;
-
-    @Column(name = "total_money")
-    private Float totalMoney;
+    @Column(name = "quantity")
+    private Integer quantity;
 
     private String color;
 }

@@ -39,8 +39,6 @@ public class OrderResponse {
                         .trackingNumber(orderEntity.getTrackingNumber())
                         .paymentMethod(orderEntity.getPaymentMethod())
                         .build();
-
-
         return orderResponse;
     }
     

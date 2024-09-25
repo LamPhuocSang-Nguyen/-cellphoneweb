@@ -27,7 +27,6 @@ public class ProductResponse extends BaseResponse {
                 .price(product.getPrice().doubleValue())
                 .quantityInStock(product.getQuantityInStock())
                 .category(product.getCategory())
-
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.cellphoneweb.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class ImageProductEntity extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonIgnore
     private ProductEntity product;
 
     @Column(name = "img_url")
