@@ -2,6 +2,7 @@ package com.example.cellphoneweb.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -30,7 +31,7 @@ public class ProductEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    @NotBlank(message = "Catalog category is required")
+//    @NotNull(message = "Catalog category is required")
     private CategoryEntity category;
 
     @Column(name = "quantity_in_stock")
