@@ -55,8 +55,6 @@ public class Security {
                                 .requestMatchers("/login/**","/user/register").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
                                 .anyRequest().authenticated()
-
-
                 )
 //                .httpBasic(withDefaults());
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
