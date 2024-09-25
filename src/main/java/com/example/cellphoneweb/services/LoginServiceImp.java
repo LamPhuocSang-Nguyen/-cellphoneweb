@@ -2,9 +2,9 @@ package com.example.cellphoneweb.services;
 
 import com.example.cellphoneweb.dtos.TokenDTO;
 import com.example.cellphoneweb.jwt.JwtHelper;
+import com.example.cellphoneweb.models.Role;
 import com.example.cellphoneweb.models.TokenEntity;
 import com.example.cellphoneweb.models.UserEntity;
-import com.example.cellphoneweb.repositorise.RoleRepository;
 import com.example.cellphoneweb.repositorise.TokenRepository;
 import com.example.cellphoneweb.repositorise.UserRepository;
 import com.example.cellphoneweb.responses.ApiResponse;
@@ -37,8 +37,8 @@ public class LoginServiceImp implements ILoginServiceImp{
     private TokenRepository tokenRepository;
 
 
-    @Autowired
-    private RoleRepository roleRepository;
+//    @Autowired
+//    private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -74,7 +74,7 @@ public class LoginServiceImp implements ILoginServiceImp{
         if (user == null) {
             throw new RuntimeException("User not found.");
         }
-        String role = user.getRole().getName();
+        String role = user.getRole();
 
         // Create a new access token
         String jwtToken = jwtHelper.generateToken(role);
@@ -84,12 +84,14 @@ public class LoginServiceImp implements ILoginServiceImp{
         TokenEntity tokenEntity = tokenRepository.findByUserId(user.getId());
         tokenEntity.setAcessToken(jwtToken);
         tokenEntity.setRefresToken(refreshToken);
+        tokenEntity.setUser(user);
         tokenRepository.save(tokenEntity);
 
         // Create a TokenDTO to return
         TokenDTO tokenDTO = new TokenDTO();
         tokenDTO.setAccessToken(jwtToken);
         tokenDTO.setRefreshToken(refreshToken);
+        tokenDTO.setUserEntity(user);
         // Optional if you want to return the new refresh token
 
         return tokenDTO;
@@ -128,6 +130,7 @@ public class LoginServiceImp implements ILoginServiceImp{
                 TokenDTO tokenDTO = TokenDTO.builder()
                         .accessToken(tokenEntity.getAcessToken())
                         .refreshToken(tokenEntity.getRefresToken())
+                        .userEntity(tokenEntity.getUser())
                         .build();
 
                 return ApiResponse.builder()
