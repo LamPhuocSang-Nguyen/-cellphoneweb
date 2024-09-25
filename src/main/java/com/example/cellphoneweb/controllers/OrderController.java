@@ -1,7 +1,10 @@
 package com.example.cellphoneweb.controllers;
 
 import com.example.cellphoneweb.dtos.OrderDTO;
+import com.example.cellphoneweb.dtos.OrderDetailDTO;
+import com.example.cellphoneweb.dtos.OrderRequestDTO;
 import com.example.cellphoneweb.exceptions.ResourceNotFoundException;
+import com.example.cellphoneweb.models.OrderDetailEntity;
 import com.example.cellphoneweb.models.OrderEntity;
 import com.example.cellphoneweb.responses.ApiResponse;
 import com.example.cellphoneweb.responses.OrderListResponse;
@@ -29,7 +32,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-
 
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> getOrders(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
@@ -66,7 +68,7 @@ public class OrderController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse> addOrder(@Valid @RequestBody OrderDTO orderDTO, BindingResult result){
+    public ResponseEntity<ApiResponse> addOrder(@Valid @RequestBody OrderRequestDTO orderRequestDTO, BindingResult result){
         if(result.hasErrors()){
             List<String> errors = result.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage).toList();
@@ -78,10 +80,15 @@ public class OrderController {
 
             return ResponseEntity.badRequest().body(apiResponse);
         }
-        OrderEntity orderEntity = orderService.saveOrder(orderDTO);
+        OrderDTO orderDTO = orderRequestDTO.getOrderDTO();
+        List<Long> productIds = orderRequestDTO.getProductIds();
+        List<Integer> quantities = orderRequestDTO.getQuantities();
+        List<String> colors = orderRequestDTO.getColors();
+
+        OrderEntity orderEntity = orderService.saveOrder(orderDTO, productIds, quantities, colors);
         ApiResponse apiResponse = ApiResponse.builder()
                 .data(orderEntity)
-                .message("Insert sucessfully")
+                .message("Insert successfully")
                 .status(HttpStatus.OK.value())
                 .build();
 
@@ -103,7 +110,6 @@ public class OrderController {
             return ResponseEntity.badRequest().body(apiResponse);
         }
         OrderEntity orderEntity = orderService.updateOrder(id, orderDTO);
-
         if(orderEntity == null){
             throw new ResourceNotFoundException("order khong tim thay voi id " + id);
         }
@@ -129,6 +135,39 @@ public class OrderController {
                 .message("Delete sucessfully")
                 .status(HttpStatus.OK.value())
                 .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PutMapping("/details/{orderDetailId}")
+    public ResponseEntity<ApiResponse> updateOrderDetail(
+            @PathVariable long orderDetailId,
+            @Valid @RequestBody OrderDetailDTO orderDetailDTO,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) {
+            List<String> errors = result.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .toList();
+            ApiResponse apiResponse = ApiResponse.builder()
+                    .data(errors)
+                    .message("Validation failed")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build();
+
+            return ResponseEntity.badRequest().body(apiResponse);
+        }
+
+        OrderDetailEntity existingOrderDetail = orderService.getOrderDetailById(orderDetailId);
+        if (orderDetailDTO.getColor() != null) {
+            existingOrderDetail.setColor(orderDetailDTO.getColor());
+        }
+        OrderDetailEntity updatedOrderDetail = orderService.updateOrderDetail(orderDetailId, orderDetailDTO);
+        ApiResponse apiResponse = ApiResponse.builder()
+                .data(updatedOrderDetail)
+                .message("Update sucessfully")
+                .status(HttpStatus.OK.value())
+                .build();
+
         return ResponseEntity.ok(apiResponse);
     }
 }
