@@ -57,6 +57,9 @@ public class Security {
                                 .requestMatchers("/user/register").hasAnyRole("USER")
                                 .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                                 .requestMatchers("/api/v1/order/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/v1/product/**").permitAll()
+                                .requestMatchers("/admin/categories/**").hasRole("ADMIN")
+                                .requestMatchers("/admin/categories").permitAll()
                                 .anyRequest().authenticated()
                 )
 //                .httpBasic(withDefaults());

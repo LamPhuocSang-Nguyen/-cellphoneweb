@@ -3,9 +3,11 @@ package com.example.cellphoneweb.services;
 import com.example.cellphoneweb.dtos.ProductColorDTO;
 import com.example.cellphoneweb.dtos.ProductDTO;
 import com.example.cellphoneweb.dtos.ProductImageDTO;
+import com.example.cellphoneweb.models.CategoryEntity;
 import com.example.cellphoneweb.models.ImageProductEntity;
 import com.example.cellphoneweb.models.ProductColorEntity;
 import com.example.cellphoneweb.models.ProductEntity;
+import com.example.cellphoneweb.repositorise.CategoryRepository;
 import com.example.cellphoneweb.repositorise.ProductColorRepository;
 import com.example.cellphoneweb.repositorise.ProductImageRepository;
 import com.example.cellphoneweb.repositorise.ProductRepository;
@@ -22,6 +24,7 @@ public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final ProductColorRepository productColorRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public ProductEntity getProductById(long id) {
@@ -35,24 +38,26 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductEntity saveProduct(ProductDTO productDTO) {
+        CategoryEntity category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(() -> new IllegalArgumentException("Category with ID " + productDTO.getCategoryId() + " not found"));
         ProductEntity product = ProductEntity.builder()
                 .name(productDTO.getProductName())
                 .description(productDTO.getProductDescription())
                 .price(productDTO.getPrice())
                 .quantityInStock(productDTO.getQuantityInStock())
-                .category(productDTO.getCategory())
+                .category(category)
                 .build();
         return productRepository.save(product);
     }
 
     @Override
     public ProductEntity updateProduct(long id, ProductDTO productDTO) {
+        CategoryEntity category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(() -> new IllegalArgumentException("Category with ID " + productDTO.getCategoryId() + " not found"));
         ProductEntity product = getProductById(id);
         product.setName(productDTO.getProductName());
         product.setDescription(productDTO.getProductDescription());
         product.setPrice(productDTO.getPrice());
         product.setQuantityInStock(productDTO.getQuantityInStock());
-        product.setCategory(productDTO.getCategory());
+        product.setCategory(category);
         return productRepository.save(product);
     }
 
