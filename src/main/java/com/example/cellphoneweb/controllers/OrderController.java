@@ -54,7 +54,7 @@ public class OrderController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/admin/getAll")
     public ResponseEntity<ApiResponse> index(){
         ApiResponse apiResponse = ApiResponse.builder()
                 .data(orderService.getAllOrders())

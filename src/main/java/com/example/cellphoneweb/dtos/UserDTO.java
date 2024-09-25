@@ -1,6 +1,8 @@
 package com.example.cellphoneweb.dtos;
 
 
+import com.example.cellphoneweb.models.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -12,6 +14,9 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class UserDTO {
+    @JsonIgnore
+    Long id;
+
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 30, message = "Username must be between 3 and 30 characters")
     private String username;
@@ -31,5 +36,6 @@ public class UserDTO {
 
     private Boolean isActive;
 
+    @NotBlank(message = "Role is required")
     private String role;
 }
