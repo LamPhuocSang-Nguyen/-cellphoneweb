@@ -52,11 +52,11 @@ public class Security {
                 .addFilterAfter(corsFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/api/v1/login/**").permitAll()
+                                .requestMatchers("/login/**","/user/register").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
-
-                                .requestMatchers("/api/v1/order/**").hasAnyRole("USER")
-
+                                .requestMatchers("/user/register").hasAnyRole("USER")
+                                .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                                .requestMatchers("/api/v1/order/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
 
 

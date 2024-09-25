@@ -42,10 +42,10 @@ public class UserEntity extends BaseEntity{
     @JsonManagedReference
     private Set<OrderEntity> orders;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", nullable = false)
-    @JsonBackReference
-    private RoleEntity role;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "role_id", nullable = false)
+//    @JsonBackReference
+    private String role;
 
 
 }

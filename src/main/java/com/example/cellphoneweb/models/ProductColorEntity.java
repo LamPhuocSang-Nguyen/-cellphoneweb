@@ -1,25 +1,26 @@
 package com.example.cellphoneweb.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "images_product")
-@Getter
+@Table(name = "product_color")
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductImage {
+public class ProductColorEntity extends BaseEntity {
     @Id
-    @Column(name = "image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int imageId;
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonIgnore
     private ProductEntity product;
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(name = "color_name", nullable = false)
+    private String colorName;
 }

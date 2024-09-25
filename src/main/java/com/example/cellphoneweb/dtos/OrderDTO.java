@@ -18,10 +18,6 @@ import java.util.Date;
 @Data
 @Builder
 public class OrderDTO {
-
-    @JsonProperty("user_id")
-    private long userId;
-
     @JsonProperty("address")
     @NotBlank(message = "dia chi sản phâm không được để trống")
     @Size(min = 2 ,max = 50, message = "Tên sản phẩm phải có từ 2 đến 50 ký tự")
@@ -31,17 +27,14 @@ public class OrderDTO {
     @NotBlank(message = "Trường mô tả sản phẩm không được để trống")
     private String note;
 
-
     @JsonProperty("orderDate")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     @Past(message = "Phai la 1 ngay trong qua khu")
     private Date orderDate;
 
     @JsonProperty("totalMoney")
-//    @NotBlank(message = "Giá của sản phẩm không được bỏ trống")
-    @NotNull
+    @NotNull(message = "Giá của sản phẩm không được bỏ trống")
     private Float totalMoney;
-
 
     @JsonProperty("shippingMethod")
     @NotBlank(message = "Phuong thuc van chuyen khong duoc trong")

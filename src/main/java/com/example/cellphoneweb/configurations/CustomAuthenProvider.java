@@ -1,7 +1,5 @@
 package com.example.cellphoneweb.configurations;
-
 import com.example.cellphoneweb.models.UserEntity;
-import com.example.cellphoneweb.repositorise.RoleRepository;
 import com.example.cellphoneweb.services.LoginServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -22,8 +20,8 @@ public class CustomAuthenProvider implements AuthenticationProvider {
     @Autowired
     private LoginServiceImp loginServiceImp;
 
-    @Autowired
-    private RoleRepository roleRepository;
+//    @Autowired
+//    private RoleRepository roleRepository;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -43,7 +41,7 @@ public class CustomAuthenProvider implements AuthenticationProvider {
                 throw new BadCredentialsException("User is banned");
             }
             List<GrantedAuthority> listRoles = new ArrayList<>();
-            SimpleGrantedAuthority role = new SimpleGrantedAuthority(userEntity.getRole().getName());
+            SimpleGrantedAuthority role = new SimpleGrantedAuthority(userEntity.getRole());
             listRoles.add(role);
 
             return new UsernamePasswordAuthenticationToken(username, password, listRoles);
