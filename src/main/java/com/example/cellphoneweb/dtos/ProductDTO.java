@@ -1,6 +1,5 @@
 package com.example.cellphoneweb.dtos;
 
-import com.example.cellphoneweb.models.CategoryEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -23,13 +22,13 @@ public class ProductDTO {
     @NotBlank(message = "Trường mô tả sản phẩm không được để trống")
     private String productDescription;
 
-    @NotBlank(message = "Giá của sản phẩm không được bỏ trống")
+    @NotNull(message = "Giá của sản phẩm không được bỏ trống")
     private BigDecimal price;
 
     @NotNull(message = "Số lượng trong kho không được để trống")
     private int quantityInStock;
 
     @NotNull(message = "category khong duoc trong")
-    private CategoryEntity category;
+    private Long categoryId;
 
 }

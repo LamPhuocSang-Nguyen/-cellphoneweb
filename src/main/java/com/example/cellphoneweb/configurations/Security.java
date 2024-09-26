@@ -54,9 +54,13 @@ public class Security {
                         authorizeRequests
                                 .requestMatchers("/login/**","/user/register").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
+                                .requestMatchers("/user/register").hasAnyRole("USER")
+                                .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                                .requestMatchers("/api/v1/order/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/v1/product/**").permitAll()
+                                .requestMatchers("/admin/categories/**").hasRole("ADMIN")
+                                .requestMatchers("/admin/categories").permitAll()
                                 .anyRequest().authenticated()
-
-
                 )
 //                .httpBasic(withDefaults());
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

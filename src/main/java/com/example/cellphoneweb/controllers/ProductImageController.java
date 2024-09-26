@@ -39,7 +39,7 @@ public class ProductImageController {
         return uniqueFileName;
     }
 
-    @GetMapping("/getAllImageStudent/{id}")
+    @GetMapping("/getAllImageProduct/{id}")
     public ResponseEntity<ApiResponse> getAllImage(@PathVariable Long id) {
         ApiResponse apiResponse = ApiResponse.builder()
                 .data(productService.getAllProductImages(id))
@@ -107,14 +107,4 @@ public class ProductImageController {
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
-
-//    @GetMapping("/getproductid/{id}")
-//    public ResponseEntity<ApiReponse> getProduct(@PathVariable long id) {
-//        ApiReponse apiResponse = ApiReponse.builder()
-//                .data(productService.getProductById(id))
-//                .message("Search success ")
-//                .status(HttpStatus.OK.value())
-//                .build();
-//        return ResponseEntity.ok().body(apiResponse);
-//    }
 }
