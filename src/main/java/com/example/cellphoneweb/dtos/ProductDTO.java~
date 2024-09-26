@@ -23,7 +23,7 @@ public class ProductDTO {
     @NotBlank(message = "Trường mô tả sản phẩm không được để trống")
     private String productDescription;
 
-    @NotNull(message = "Giá của sản phẩm không được bỏ trống")
+    @NotBlank(message = "Giá của sản phẩm không được bỏ trống")
     private BigDecimal price;
 
     @NotNull(message = "Số lượng trong kho không được để trống")

@@ -57,6 +57,9 @@ public class Security {
                                 .requestMatchers("/user/register").hasAnyRole("USER")
                                 .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                                 .requestMatchers("/api/v1/order/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/v1/admin/categories").permitAll()
+                                .requestMatchers("/api/v1//admin/categories/update/**").hasRole("ADMIN")
+                                .requestMatchers("/api/v1//admin/categories/delete/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
 
 
