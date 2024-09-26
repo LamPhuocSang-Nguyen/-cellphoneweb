@@ -60,6 +60,17 @@ public class ProductController {
         return ResponseEntity.ok().body(apiResponse);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getProduct(@PathVariable long id){
+        ProductEntity product = productService.getProductById(id);
+        ApiResponse apiResponse = ApiResponse.builder()
+                .data(product)
+                .status(HttpStatus.OK.value())
+                .message("OK")
+                .build();
+        return ResponseEntity.ok().body(apiResponse);
+    }
+
     @PostMapping("/admin/add")
     public ResponseEntity<ApiResponse> addingProduct(@Valid @RequestBody ProductDTO productDTO, BindingResult result){
         if(result.hasErrors()){
