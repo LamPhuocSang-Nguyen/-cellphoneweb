@@ -51,12 +51,9 @@ public class JwtFilter extends OncePerRequestFilter {
                     System.out.println(role);
 
                     // Create a list of GrantedAuthority from the single role
-//                    List<GrantedAuthority> listRoles = new ArrayList<>();
-
-                    Type listType = new TypeToken<ArrayList<SimpleGrantedAuthority>>(){}.getType();
-                    List<GrantedAuthority> listRoles = gson.fromJson(role, listType);
+                    List<GrantedAuthority> listRoles = new ArrayList<>();
                     if (role != null && !role.isEmpty()) {
-                        listRoles.add(new SimpleGrantedAuthority(role));
+                        listRoles.add(new SimpleGrantedAuthority(role)); // No need for Gson here
                     }
 
                     if (!listRoles.isEmpty()) {
@@ -95,4 +92,5 @@ public class JwtFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
 }

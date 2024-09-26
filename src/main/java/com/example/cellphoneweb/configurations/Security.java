@@ -60,6 +60,7 @@ public class Security {
                                 .requestMatchers("/api/v1/product/**").permitAll()
                                 .requestMatchers("/admin/categories/**").hasRole("ADMIN")
                                 .requestMatchers("/admin/categories").permitAll()
+                                .requestMatchers("/user/getAllUser").hasAnyRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
 //                .httpBasic(withDefaults());
