@@ -60,9 +60,7 @@ public class Security {
                                 .requestMatchers("/api/v1/product/**").permitAll()
                                 .requestMatchers("/admin/categories/**").hasRole("ADMIN")
                                 .requestMatchers("/admin/categories").permitAll()
-<<<<<<< HEAD
                                 .requestMatchers("/api/v1/admin/product/image/uploads/**").hasRole("ADMIN")
-=======
                                 .requestMatchers("/user/getAllUser").permitAll()
                                 .requestMatchers("/api/v1/admin/categories").permitAll()
                                 .requestMatchers("/api/v1/admin/categories/update/**").hasRole("ADMIN")
@@ -70,7 +68,6 @@ public class Security {
                                 .requestMatchers("/api/v1/admin/vouchers").hasRole("ADMIN")
                                 .requestMatchers("/api/v1/admin/vouchers/code/**").permitAll()
                                 .requestMatchers("/api/v1/product/getAll").permitAll()
->>>>>>> fabe2edc3650f8aceb231a2ca2dc72c8bec226c7
                                 .anyRequest().authenticated()
 
 
