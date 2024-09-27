@@ -31,7 +31,7 @@ public class ProductEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-//    @NotNull(message = "Catalog category is required")
+    @NotNull(message = "Catalog category is required")
     private CategoryEntity category;
 
     @Column(name = "quantity_in_stock")
