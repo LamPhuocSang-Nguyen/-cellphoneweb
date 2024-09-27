@@ -58,16 +58,17 @@ public class Security {
                                 .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                                 .requestMatchers("/api/v1/order/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/api/v1/admin/categories").permitAll()
-                                .requestMatchers("/api/v1//admin/categories/update/**").hasRole("ADMIN")
-                                .requestMatchers("/api/v1//admin/categories/delete/**").hasRole("ADMIN")
+                                .requestMatchers("/api/v1/admin/categories/update/**").hasRole("ADMIN")
+                                .requestMatchers("/api/v1/admin/categories/delete/**").hasRole("ADMIN")
+                                .requestMatchers("/api/v1/admin/vouchers").hasRole("ADMIN")
+                                .requestMatchers("/api/v1/admin/vouchers/code/**").permitAll()
+                                .requestMatchers("/api/v1/product/getAll").permitAll()
                                 .anyRequest().authenticated()
 
 
                 )
 //                .httpBasic(withDefaults());
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-
 
         return http.build();
 
